@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: authors_database
+    volumes:
+      - ./init-scripts/init-db1.sql:/docker-entrypoint-initdb.d/init-db1.sql
+      - ./init-scripts/init-db2.sql:/docker-entrypoint-initdb.d/init-db2.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    networks:
+      - default
+    environment:
+      DB1_NAME: authors_database
+      DB1_USER: postgres
+      DB1_PASSWORD: postgres
+      DB1_HOST: db
+      DB1_PORT: 5432
+      DB2_NAME: logs_database
+      DB2_USER: postgres
+      DB2_PASSWORD: postgres
+      DB2_HOST: db
+      DB2_PORT: 5432
+
+networks:
+  default:
+    driver: bridge
