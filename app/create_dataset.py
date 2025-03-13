@@ -35,8 +35,7 @@ def get_user_comments(login, db1_url):
         GROUP BY p.id
         """
         comments_data = pd.read_sql_query(query_comments, engine_db1)
-        return pd.merge(posts_data, comments_data, on='post_id', how='left')[
-            ['login', 'header', 'author', 'comments_count']]
+        return pd.merge(posts_data, comments_data, on='post_id', how='left')[['login', 'header', 'author', 'comments_count']]
     except Exception as e:
         print(f"Error: {e}")
         return pd.DataFrame()
